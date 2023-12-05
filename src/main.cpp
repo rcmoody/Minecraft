@@ -6,6 +6,7 @@
 #include <stb_image.hpp>
 
 #include "debug.hpp"
+#include "camera.hpp"
 #include "renderer/renderer.hpp"
 
 constexpr char WINDOW_TITLE[] = "Minecraft";
@@ -13,18 +14,50 @@ constexpr char WINDOW_ICON_PATH[] = "res/images/icon.png";
 constexpr int WINDOW_WIDTH = 960;
 constexpr int WINDOW_HEIGHT = 540;
 
-int screenWidth = WINDOW_WIDTH;
-int screenHeight = WINDOW_HEIGHT;
+float aspectRatio = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
 
 void FramebufferSizeCallback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
 
-    screenWidth = width;
-    screenHeight = height;
+    aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 }
 
-void Setup()
+void MouseCallback(GLFWwindow *window, double xPos, double yPos)
+{
+    Camera *camera = static_cast<Camera *>(glfwGetWindowUserPointer(window));
+
+    if (camera)
+    {
+        static double lastX = xPos;
+        static double lastY = yPos;
+        static float pitch = camera->getPitch();
+        static float yaw = camera->getYaw();
+
+        float xOffset = static_cast<float>(xPos - lastX);
+        float yOffset = static_cast<float>(lastY - yPos);
+
+        xOffset *= camera->sensitivity;
+        yOffset *= camera->sensitivity;
+
+        yaw += xOffset;
+        pitch += yOffset;
+
+        pitch = glm::clamp(pitch, -89.9f, 89.9f);
+        yaw = std::fmod(yaw, 360.0f);
+        if (yaw < 0.0f)
+        {
+            yaw += 360.0f;
+        }
+
+        camera->setPitchAndYaw(pitch, yaw);
+
+        lastX = xPos;
+        lastY = yPos;
+    }
+}
+
+void Run()
 {
     GLFWwindow *window;
 
@@ -50,6 +83,14 @@ void Setup()
 
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
+    Camera camera{
+        .position = glm::vec3(0.0f, 0.0f, 2.0f),
+    };
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, MouseCallback);
+    glfwSetWindowUserPointer(window, static_cast<void *>(&camera));
+
     glfwMakeContextCurrent(window);
 
     int version = gladLoadGL(glfwGetProcAddress);
@@ -67,7 +108,14 @@ void Setup()
 
     while (!glfwWindowShouldClose(window))
     {
-        renderer.Draw(screenWidth, screenHeight);
+        float currentFrame = glfwGetTime();
+        static float lastFrame = currentFrame;
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        camera.processInput(window, deltaTime);
+
+        renderer.Draw(camera.getViewMatrix(), camera.getProjectionMatrix(aspectRatio));
 
         glfwSwapBuffers(window);
 
@@ -85,13 +133,13 @@ int main(void)
 
     try
     {
-        Setup();
+        Run();
     }
     catch (const std::exception &e)
     {
         spdlog::error(e.what());
-        return -1;
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

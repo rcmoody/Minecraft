@@ -7,7 +7,6 @@
 #include "../utils.hpp"
 
 Renderer::Renderer()
-    : mTheta(0.0f)
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -99,14 +98,8 @@ Renderer::Renderer()
     mTextureArray = Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"});
 }
 
-void Renderer::Draw(int screenWidth, int screenHeight)
+void Renderer::Draw(glm::mat4 view, glm::mat4 projection)
 {
-    mTheta += 0.01f;
-    mTheta = fmod(mTheta, 360.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(2.0f * sin(mTheta), 2.0f, 2.0f * cos(mTheta)), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    float aspectRatio = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     mShader->Bind();

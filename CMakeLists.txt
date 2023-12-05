@@ -13,6 +13,7 @@ add_executable(Minecraft
     src/main.cpp
     src/debug.hpp
     src/utils.hpp
+    src/camera.hpp
     src/world/chunk.cpp
     src/world/chunk.hpp
     src/world/world.cpp
