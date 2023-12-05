@@ -22,6 +22,7 @@ Renderer::Renderer()
     sources[GL_FRAGMENT_SHADER] = Utils::ReadFile("res/shaders/frag.glsl");
     mShader = std::make_unique<Shader>(sources);
 
+    // clang-format off
     std::vector<float> vertices = {
         // Front
         0.5, -0.5, 0.5, 1.0, 0.0, 0.0,
@@ -85,6 +86,7 @@ Renderer::Renderer()
         20, 21, 22,
         22, 23, 20,
     };
+    // clang-format on
 
     mVertexArray = std::make_unique<VertexArray>();
 

@@ -10,6 +10,7 @@ class IndexBuffer : public Buffer
 
 public:
     IndexBuffer(const GLuint *data, GLuint count);
+    IndexBuffer(IndexBuffer &&) = default;
 
     unsigned int GetCount() const
     {

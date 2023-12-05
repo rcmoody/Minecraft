@@ -5,9 +5,9 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
-#include "gl_object.hpp"
+#include "opengl.hpp"
 
-class Texture : public GLObject
+class Texture : public OpenGLObject
 {
 public:
     Texture(const void *data, int width, int height);

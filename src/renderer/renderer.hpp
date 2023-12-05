@@ -15,8 +15,8 @@ class Renderer
     std::unique_ptr<VertexArray> mVertexArray;
     std::unique_ptr<VertexBuffer> mVertexBuffer;
     std::unique_ptr<IndexBuffer> mIndexBuffer;
-    std::unique_ptr<Shader> mShader;
     std::unique_ptr<TextureArray> mTextureArray;
+    std::unique_ptr<Shader> mShader;
 
 public:
     Renderer();

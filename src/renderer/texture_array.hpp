@@ -5,9 +5,9 @@
 
 #include <glad/gl.h>
 
-#include "gl_object.hpp"
+#include "opengl.hpp"
 
-class TextureArray : public GLObject {
+class TextureArray : public OpenGLObject {
 public:
     TextureArray(int width, int height, const std::vector<void *> &data);
     ~TextureArray();

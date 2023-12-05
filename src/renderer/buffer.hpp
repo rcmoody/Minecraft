@@ -2,9 +2,9 @@
 
 #include <glad/gl.h>
 
-#include "gl_object.hpp"
+#include "opengl.hpp"
 
-class Buffer : public GLObject
+class Buffer : public OpenGLObject
 {
     GLenum mTarget;
 

@@ -6,9 +6,9 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 
-#include "gl_object.hpp"
+#include "opengl.hpp"
 
-class Shader : public GLObject
+class Shader : public OpenGLObject
 {
 public:
     Shader(const std::unordered_map<GLenum, std::string> &sources);

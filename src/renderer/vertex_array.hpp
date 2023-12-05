@@ -5,9 +5,9 @@
 #include "vertex_buffer.hpp"
 #include "vertex_buffer_layout.hpp"
 
-#include "gl_object.hpp"
+#include "opengl.hpp"
 
-class VertexArray : public GLObject
+class VertexArray : public OpenGLObject
 {
 public:
     VertexArray();

@@ -20,7 +20,7 @@ add_executable(Minecraft
     src/world/world.hpp
     src/renderer/renderer.cpp
     src/renderer/renderer.hpp
-    src/renderer/gl_object.hpp
+    src/renderer/opengl.hpp
     src/renderer/shader.cpp
     src/renderer/shader.cpp
     src/renderer/shader.hpp
