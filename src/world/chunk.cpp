@@ -27,7 +27,7 @@ Chunk::Chunk()
                     type = VoxelType::Stone;
                 }
 
-                int index = GetIndex(x, y, z);
+                int index = getIndex(x, y, z);
                 voxels[index] = Voxel{type};
             }
         }
