@@ -5,16 +5,12 @@
 #include "vertex_buffer.hpp"
 #include "vertex_buffer_layout.hpp"
 
-class VertexArray
-{
-    unsigned int mID;
+#include "gl_object.hpp"
 
+class VertexArray : public GLObject
+{
 public:
     VertexArray();
-    VertexArray(VertexArray &&other);
-    VertexArray &operator=(VertexArray &&other);
-    VertexArray(const VertexArray &) = delete;
-    VertexArray &operator=(const VertexArray &) = delete;
     ~VertexArray();
 
     void AddBuffer(const VertexBuffer &vertexBuffer, const VertexBufferLayout &layout);

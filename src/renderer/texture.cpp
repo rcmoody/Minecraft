@@ -1,7 +1,6 @@
 #include "texture.hpp"
 
 #include <stdexcept>
-#include <utility>
 
 Texture::Texture(const void *data, int width, int height)
 {
@@ -22,15 +21,6 @@ Texture::Texture(const void *data, int width, int height)
     {
         throw std::runtime_error("Invalid texture data");
     }
-}
-
-Texture::Texture(Texture &&other)
-    : mID(std::exchange(other.mID, 0)) {}
-
-Texture &Texture::operator=(Texture &&other)
-{
-    std::swap(other, *this);
-    return *this;
 }
 
 Texture::~Texture()

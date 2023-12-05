@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef NDEBUG
 
 #include <spdlog/spdlog.h>

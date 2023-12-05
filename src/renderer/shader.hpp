@@ -6,16 +6,12 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 
-class Shader
-{
-    GLuint mID;
+#include "gl_object.hpp"
 
+class Shader : public GLObject
+{
 public:
     Shader(const std::unordered_map<GLenum, std::string> &sources);
-    Shader(Shader &&other);
-    Shader& operator=(Shader &&other);
-    Shader(const Shader&) = delete;
-    Shader& operator=(const Shader&) = delete;
     ~Shader();
 
     void Bind() const;

@@ -17,7 +17,7 @@ class Renderer
     std::unique_ptr<IndexBuffer> mIndexBuffer;
     std::unique_ptr<Shader> mShader;
     std::unique_ptr<TextureArray> mTextureArray;
-    float mTheta = 0.0f;
+    float mTheta;
 
 public:
     Renderer();

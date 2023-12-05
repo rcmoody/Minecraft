@@ -33,8 +33,8 @@ void Setup()
         throw std::runtime_error("Failed to initialize GLFW.");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
@@ -45,7 +45,7 @@ void Setup()
     }
 
     GLFWimage images[1];
-    images[0].pixels = stbi_load(WINDOW_ICON_PATH, &images[0].width, &images[0].height, 0, STBI_rgb_alpha);
+    images[0].pixels = stbi_load(WINDOW_ICON_PATH, &images[0].width, &images[0].height, nullptr, STBI_rgb_alpha);
     glfwSetWindowIcon(window, 1, images);
 
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);

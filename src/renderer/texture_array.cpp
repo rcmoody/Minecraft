@@ -1,7 +1,6 @@
 #include "texture_array.hpp"
 
 #include <stdexcept>
-#include <utility>
 
 #include <stb_image.hpp>
 
@@ -29,15 +28,6 @@ TextureArray::TextureArray(int width, int height, const std::vector<void *> &dat
             throw std::runtime_error("Invalid texture data");
         }
     }
-}
-
-TextureArray::TextureArray(TextureArray &&other)
-    : mID(std::exchange(other.mID, 0)) {}
-
-TextureArray &TextureArray::operator=(TextureArray &&other)
-{
-    std::swap(other, *this);
-    return *this;
 }
 
 TextureArray::~TextureArray()

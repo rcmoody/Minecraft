@@ -1,19 +1,8 @@
 #include "vertex_array.hpp"
 
-#include <utility>
-
 VertexArray::VertexArray()
 {
     glGenVertexArrays(1, &mID);
-}
-
-VertexArray::VertexArray(VertexArray &&other)
-    : mID(std::exchange(other.mID, 0)) {}
-
-VertexArray &VertexArray::operator=(VertexArray &&other)
-{
-    std::swap(other, *this);
-    return *this;
 }
 
 VertexArray::~VertexArray()

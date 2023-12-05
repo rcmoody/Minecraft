@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 #include <vector>
-#include <utility>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -45,15 +44,6 @@ Shader::Shader(const std::unordered_map<GLenum, std::string> &sources)
 
     for (auto shader : shaders)
         glDeleteShader(shader);
-}
-
-Shader::Shader(Shader &&other)
-    : mID(std::exchange(other.mID, 0)) {}
-
-Shader &Shader::operator=(Shader &&other)
-{
-    std::swap(other, *this);
-    return *this;
 }
 
 Shader::~Shader()

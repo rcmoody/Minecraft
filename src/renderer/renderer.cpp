@@ -7,6 +7,7 @@
 #include "../utils.hpp"
 
 Renderer::Renderer()
+    : mTheta(0.0f)
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -95,7 +96,7 @@ Renderer::Renderer()
 
     mIndexBuffer = std::make_unique<IndexBuffer>(indices.data(), static_cast<GLuint>(indices.size()));
 
-    mTextureArray = std::make_unique<TextureArray>(Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"}));
+    mTextureArray = Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"});
 }
 
 void Renderer::Draw(int screenWidth, int screenHeight)
