@@ -9,18 +9,20 @@
 #include "camera.hpp"
 #include "renderer/renderer.hpp"
 
+#define ASPECT_RATIO(WIDTH, HEIGHT) static_cast<float>(WIDTH) / static_cast<float>(HEIGHT)
+
 constexpr char WINDOW_TITLE[] = "Minecraft";
 constexpr char WINDOW_ICON_PATH[] = "res/images/icon.png";
 constexpr int WINDOW_WIDTH = 960;
 constexpr int WINDOW_HEIGHT = 540;
 
-float aspectRatio = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
+float aspectRatio = ASPECT_RATIO(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 void FramebufferSizeCallback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
 
-    aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+    aspectRatio = ASPECT_RATIO(width, height);
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
