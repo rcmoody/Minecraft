@@ -7,8 +7,12 @@
 #include <utility>
 
 constexpr int CHUNK_WIDTH = 16;
-constexpr int CHUNK_HEIGHT = 255;
+constexpr int CHUNK_HEIGHT = 256;
 constexpr int CHUNK_DEPTH = 16;
+
+constexpr int CHUNK_LOG2_WIDTH = 4;
+constexpr int CHUNK_LOG2_HEIGHT = 8;
+constexpr int CHUNK_LOG2_DEPTH = 4;
 
 enum class VoxelType : uint8_t
 {
@@ -36,6 +40,6 @@ private:
     {
         assert(x >= 0 && x < CHUNK_WIDTH && y >= 0 && y < CHUNK_HEIGHT && z >= 0 && z < CHUNK_DEPTH);
 
-        return x + CHUNK_WIDTH * (y + CHUNK_HEIGHT * z);
+        return x + (y << CHUNK_LOG2_WIDTH) + (z << (CHUNK_LOG2_WIDTH + CHUNK_LOG2_HEIGHT));
     }
 };
