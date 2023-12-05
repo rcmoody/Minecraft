@@ -7,17 +7,12 @@
 
 #include "gl_object.hpp"
 
-struct TextureFormat
-{
-    int width;
-    int height;
-};
-
 class Texture : public GLObject
 {
 public:
     Texture(const void *data, int width, int height);
     ~Texture();
+    Texture(Texture &&) = default;
 
     void Bind();
     void Unbind();

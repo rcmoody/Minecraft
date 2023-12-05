@@ -13,6 +13,7 @@ class Shader : public GLObject
 public:
     Shader(const std::unordered_map<GLenum, std::string> &sources);
     ~Shader();
+    Shader(Shader &&) = default;
 
     void Bind() const;
     void Unbind() const;

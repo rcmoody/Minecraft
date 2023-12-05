@@ -11,6 +11,7 @@ class TextureArray : public GLObject {
 public:
     TextureArray(int width, int height, const std::vector<void *> &data);
     ~TextureArray();
+    TextureArray(TextureArray &&) = default;
 
     void Bind() const;
     void Unbind() const;

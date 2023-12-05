@@ -12,6 +12,7 @@ class VertexArray : public GLObject
 public:
     VertexArray();
     ~VertexArray();
+    VertexArray(VertexArray &&) = default;
 
     void AddBuffer(const VertexBuffer &vertexBuffer, const VertexBufferLayout &layout);
     void Bind() const;

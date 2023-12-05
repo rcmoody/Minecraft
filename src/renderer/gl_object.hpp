@@ -12,21 +12,14 @@ protected:
 
 public:
     explicit GLObject() = default;
-
     ~GLObject() = default;
- 
-    GLObject(const GLObject& other)
-        : mID(other.mID) {}
- 
-    GLObject(GLObject&& other) noexcept
+
+    GLObject(const GLObject &other) = delete;
+    GLObject(GLObject &&other) noexcept
         : mID(std::exchange(other.mID, 0)) {}
- 
-    GLObject& operator=(const GLObject& other)
-    {
-        return *this = GLObject(other);
-    }
- 
-    GLObject& operator=(GLObject&& other) noexcept
+    
+    GLObject &operator=(const GLObject &other) = delete;
+    GLObject &operator=(GLObject &&other) noexcept
     {
         std::swap(mID, other.mID);
         return *this;

@@ -11,6 +11,7 @@ class Buffer : public GLObject
 public:
     Buffer(GLenum target, const void *data, GLsizeiptr size);
     ~Buffer();
+    Buffer(Buffer &&) = default;
 
     void Bind() const;
     void Unbind() const;

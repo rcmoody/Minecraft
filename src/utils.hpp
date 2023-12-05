@@ -4,6 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <stb_image.hpp>
 
@@ -28,20 +29,20 @@ namespace Utils
         return buffer.str();
     }
 
-    std::unique_ptr<Texture> LoadTextureData(const std::string &filename)
+    Texture LoadTextureData(const std::string &filename)
     {
         stbi_set_flip_vertically_on_load(true);
         int width, height;
         unsigned char *data = stbi_load(filename.c_str(), &width, &height, nullptr, STBI_rgb_alpha);
 
-        auto texture = std::make_unique<Texture>(data, width, height);
+        Texture texture(data, width, height);
 
         stbi_image_free(data);
 
         return texture;
     }
 
-    std::unique_ptr<TextureArray> LoadTextureArray(int width, int height, const std::vector<std::string> &filenames)
+    TextureArray LoadTextureArray(int width, int height, const std::vector<std::string> &filenames)
     {
         stbi_set_flip_vertically_on_load(true);
         std::vector<void *> textureArrayData;
@@ -52,7 +53,7 @@ namespace Utils
             textureArrayData.emplace_back(data);
         }
 
-        auto textureArray = std::make_unique<TextureArray>(width, height, textureArrayData);
+        TextureArray textureArray(width, height, textureArrayData);
 
         for (auto &data : textureArrayData)
         {

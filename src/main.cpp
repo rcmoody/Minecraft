@@ -108,7 +108,7 @@ void Run()
 
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         static float lastFrame = currentFrame;
         float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;

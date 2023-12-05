@@ -95,7 +95,7 @@ Renderer::Renderer()
 
     mIndexBuffer = std::make_unique<IndexBuffer>(indices.data(), static_cast<GLuint>(indices.size()));
 
-    mTextureArray = Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"});
+    mTextureArray = std::make_unique<TextureArray>(Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"}));
 }
 
 void Renderer::Draw(glm::mat4 view, glm::mat4 projection)
