@@ -3,8 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../utils.hpp"
-
 Chunk::Chunk()
 {
     for (int x = 0; x < CHUNK_WIDTH; ++x)
@@ -39,13 +37,8 @@ Chunk::Chunk()
     }
 }
 
-Renderable Chunk::GenerateRenderable(glm::vec3 position)
+Renderable Chunk::GenerateRenderable(Renderer& renderer, glm::vec3 position)
 {
-    std::unordered_map<GLenum, std::string> sources;
-    sources[GL_VERTEX_SHADER] = Utils::ReadFile("res/shaders/vert.glsl");
-    sources[GL_FRAGMENT_SHADER] = Utils::ReadFile("res/shaders/frag.glsl");
-    Shader shader(sources);
-
     // clang-format off
     std::vector<float> vertices = {
         // Front
@@ -112,29 +105,12 @@ Renderable Chunk::GenerateRenderable(glm::vec3 position)
     };
     // clang-format on
 
-    VertexArray vertexArray;
-
     VertexBufferLayout layout;
     layout.Push<float>(3);
     layout.Push<float>(3);
 
-    VertexBuffer vertexBuffer(vertices.data(), static_cast<GLsizeiptr>(vertices.size() * sizeof(vertices[0])));
-    vertexArray.AddBuffer(vertexBuffer, layout);
-
-    IndexBuffer indexBuffer(indices.data(), static_cast<GLuint>(indices.size()));
-
-    TextureArray textureArray = Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"});
-
-    Mesh mesh{
-        std::move(vertexArray),
-        std::move(vertexBuffer),
-        std::move(indexBuffer),
-        std::move(textureArray),
-        std::move(shader),
-    };
-
     return {
-        std::move(mesh),
+        renderer.AddMesh(vertices, indices, layout),
         glm::translate(glm::mat4(1.0f), position),
     };
 }

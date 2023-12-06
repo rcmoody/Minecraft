@@ -37,7 +37,7 @@ public:
 
     Chunk();
 
-    Renderable GenerateRenderable(glm::vec3 position);
+    Renderable GenerateRenderable(Renderer& renderer, glm::vec3 position);
 
 private:
     int getIndex(int x, int y, int z)

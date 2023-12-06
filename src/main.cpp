@@ -89,15 +89,17 @@ public:
         camera = std::make_optional<Camera>(Camera{.position = glm::vec3(-2.0f, 0.0f, -2.0f)});
 
         world = std::make_optional<World>(10, 10);
-
-        for (auto [position, chunk] : world->chunks)
-        {
-            renderer->mRenderables.emplace_back(chunk.GenerateRenderable(glm::vec3(position.x * CHUNK_WIDTH, 0.0f, position.y * CHUNK_DEPTH)));
-        }
     }
 
     void MainLoop()
     {
+        std::vector<Renderable> renderables;
+
+        for (auto [position, chunk] : world->chunks)
+        {
+            renderables.emplace_back(chunk.GenerateRenderable(renderer.value(), glm::vec3(position.x * CHUNK_WIDTH, 0.0f, position.y * CHUNK_DEPTH)));
+        }
+
         while (!glfwWindowShouldClose(window))
         {
             float currentFrame = static_cast<float>(glfwGetTime());
@@ -107,7 +109,7 @@ public:
 
             camera->processInput(window, deltaTime);
 
-            renderer->Draw(camera->getViewMatrix(), camera->getProjectionMatrix(aspectRatio));
+            renderer->Draw(renderables, camera->getViewMatrix(), camera->getProjectionMatrix(aspectRatio));
 
             glfwSwapBuffers(window);
 
@@ -135,7 +137,7 @@ void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 
     if (app)
     {
-        auto& camera = app->camera;
+        auto &camera = app->camera;
 
         if (camera)
         {

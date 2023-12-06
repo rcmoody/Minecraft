@@ -7,24 +7,17 @@
 #include "vertex_array.hpp"
 #include "vertex_buffer.hpp"
 #include "index_buffer.hpp"
-#include "shader.hpp"
 #include "texture_array.hpp"
+#include "shader.hpp"
 
 struct Mesh
 {
     VertexArray vertexArray;
     VertexBuffer vertexBuffer;
     IndexBuffer indexBuffer;
-    TextureArray textureArray;
-    Shader shader;
 
-    void Render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const
+    void Render() const
     {
-        shader.Bind();
-        shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
-
         vertexArray.Bind();
         indexBuffer.Bind();
 
@@ -34,21 +27,27 @@ struct Mesh
 
 struct Renderable
 {
-    Mesh mesh;
+    Mesh &mesh;
     glm::mat4 transform;
 
-    void Render(glm::mat4 view, glm::mat4 projection) const
+    void Render(Shader& shader) const
     {
-        mesh.Render(transform, view, projection);
+        shader.setMat4("model", transform);
+        mesh.Render();
     }
 };
 
 class Renderer
 {
+    std::vector<Mesh> mMeshes;
+    std::optional<TextureArray> mTextureArray;
+    std::optional<Shader> mShader;
+
 public:
-    std::vector<Renderable> mRenderables;
-    
     Renderer();
 
-    void Draw(glm::mat4 view, glm::mat4 projection);
+    void Draw(std::span<const Renderable> renderables, glm::mat4 view, glm::mat4 projection);
+
+    template <typename T>
+    Mesh &AddMesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices, VertexBufferLayout layout);
 };
