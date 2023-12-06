@@ -8,6 +8,7 @@
 #include "debug.hpp"
 #include "camera.hpp"
 #include "renderer/renderer.hpp"
+#include "world/world.hpp"
 
 #define ASPECT_RATIO(WIDTH, HEIGHT) static_cast<float>(WIDTH) / static_cast<float>(HEIGHT)
 
@@ -86,7 +87,7 @@ void Run()
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
     Camera camera{
-        .position = glm::vec3(0.0f, 0.0f, 2.0f),
+        .position = glm::vec3(0.0f, 0.0f, -2.0f),
     };
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -106,7 +107,14 @@ void Run()
     glDebugMessageCallback(Debug::DebugCallback, 0);
 #endif
 
+    World world(10, 10);
+
     Renderer renderer;
+
+    for (auto [position, chunk] : world.chunks)
+    {
+        renderer.mRenderables.emplace_back(chunk.GenerateRenderable(glm::vec3(position.x * CHUNK_WIDTH, 0.0f, position.y * CHUNK_DEPTH)));
+    }
 
     while (!glfwWindowShouldClose(window))
     {

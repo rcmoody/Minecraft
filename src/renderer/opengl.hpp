@@ -22,6 +22,6 @@ public:
         return *this;
     }
 
-    OpenGLObject(const OpenGLObject &other) = delete;
-    OpenGLObject &operator=(const OpenGLObject &other) = delete
+    OpenGLObject(const OpenGLObject &) = delete;
+    OpenGLObject &operator=(const OpenGLObject &) = delete;
 };

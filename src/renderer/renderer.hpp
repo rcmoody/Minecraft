@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <span>
 
 #include <glad/gl.h>
 
@@ -10,15 +10,44 @@
 #include "shader.hpp"
 #include "texture_array.hpp"
 
+struct Mesh
+{
+    VertexArray vertexArray;
+    VertexBuffer vertexBuffer;
+    IndexBuffer indexBuffer;
+    TextureArray textureArray;
+    Shader shader;
+
+    void Render(glm::mat4 model, glm::mat4 view, glm::mat4 projection) const
+    {
+        shader.Bind();
+        shader.setMat4("model", model);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+
+        vertexArray.Bind();
+        indexBuffer.Bind();
+
+        glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+    }
+};
+
+struct Renderable
+{
+    Mesh mesh;
+    glm::mat4 transform;
+
+    void Render(glm::mat4 view, glm::mat4 projection) const
+    {
+        mesh.Render(transform, view, projection);
+    }
+};
+
 class Renderer
 {
-    std::unique_ptr<VertexArray> mVertexArray;
-    std::unique_ptr<VertexBuffer> mVertexBuffer;
-    std::unique_ptr<IndexBuffer> mIndexBuffer;
-    std::unique_ptr<TextureArray> mTextureArray;
-    std::unique_ptr<Shader> mShader;
-
 public:
+    std::vector<Renderable> mRenderables;
+    
     Renderer();
 
     void Draw(glm::mat4 view, glm::mat4 projection);

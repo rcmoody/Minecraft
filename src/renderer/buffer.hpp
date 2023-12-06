@@ -12,6 +12,7 @@ public:
     Buffer(GLenum target, const void *data, GLsizeiptr size);
     ~Buffer();
     Buffer(Buffer &&) = default;
+    Buffer &operator=(Buffer &&) = default;
 
     void Bind() const;
     void Unbind() const;

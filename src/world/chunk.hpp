@@ -6,6 +6,8 @@
 #include <vector>
 #include <utility>
 
+#include "../renderer/renderer.hpp"
+
 constexpr int CHUNK_WIDTH = 16;
 constexpr int CHUNK_HEIGHT = 256;
 constexpr int CHUNK_DEPTH = 16;
@@ -34,6 +36,8 @@ public:
     std::array<Voxel, CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH> voxels;
 
     Chunk();
+
+    Renderable GenerateRenderable(glm::vec3 position);
 
 private:
     int getIndex(int x, int y, int z)

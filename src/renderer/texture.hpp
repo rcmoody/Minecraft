@@ -13,6 +13,7 @@ public:
     Texture(const void *data, int width, int height);
     ~Texture();
     Texture(Texture &&) = default;
+    Texture &operator=(Texture &&) = default;
 
     void Bind();
     void Unbind();

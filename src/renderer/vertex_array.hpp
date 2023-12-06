@@ -13,6 +13,7 @@ public:
     VertexArray();
     ~VertexArray();
     VertexArray(VertexArray &&) = default;
+    VertexArray &operator=(VertexArray &&) = default;
 
     void AddBuffer(const VertexBuffer &vertexBuffer, const VertexBufferLayout &layout);
     void Bind() const;
