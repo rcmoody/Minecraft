@@ -34,11 +34,11 @@ void Renderer::Draw(std::span<const Renderable> renderables, glm::mat4 view, glm
     mShader->setMat4("projection", projection);
 
     for (auto &renderable : renderables)
-        renderable.Render(mShader.value());
+        renderable.Render(mMeshes, mShader.value());
 }
 
 template <>
-Mesh &Renderer::AddMesh<float>(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, VertexBufferLayout layout)
+ResourceHandle<Mesh> Renderer::AddMesh<float>(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, const VertexBufferLayout& layout)
 {
     VertexArray vertexArray;
 
@@ -53,6 +53,5 @@ Mesh &Renderer::AddMesh<float>(const std::vector<float>& vertices, const std::ve
         std::move(indexBuffer),
     };
 
-    mMeshes.emplace_back(std::move(mesh));
-    return mMeshes.back();
+    return mMeshes.Add(std::move(mesh));
 }
