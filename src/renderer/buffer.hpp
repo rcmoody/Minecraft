@@ -4,15 +4,20 @@
 
 #include "opengl.hpp"
 
-class Buffer : public OpenGLObject
+struct BufferDeleter
+{
+    void operator()(GLuint id)
+    {
+        glDeleteBuffers(1, &id);
+    }
+};
+
+class Buffer : public OpenGLObject<BufferDeleter>
 {
     GLenum mTarget;
 
 public:
     Buffer(GLenum target, const void *data, GLsizeiptr size);
-    ~Buffer();
-    Buffer(Buffer &&) = default;
-    Buffer &operator=(Buffer &&) = default;
 
     void Bind() const;
     void Unbind() const;

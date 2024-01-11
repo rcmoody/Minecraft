@@ -8,6 +8,4 @@ class VertexBuffer : public Buffer
 {
 public:
     VertexBuffer(const void *data, GLsizeiptr size);
-    VertexBuffer(VertexBuffer &&) = default;
-    VertexBuffer &operator=(VertexBuffer &&) = default;
 };

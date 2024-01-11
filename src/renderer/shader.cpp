@@ -46,11 +46,6 @@ Shader::Shader(const std::unordered_map<GLenum, std::string> &sources)
         glDeleteShader(shader);
 }
 
-Shader::~Shader()
-{
-    glDeleteProgram(mID);
-}
-
 void Shader::Bind() const
 {
     glUseProgram(mID);

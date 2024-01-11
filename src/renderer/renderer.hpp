@@ -92,14 +92,13 @@ struct Renderable
 class Renderer
 {
     ResourceStorage<Mesh> mMeshes;
-    std::optional<TextureArray> mTextureArray;
-    std::optional<Shader> mShader;
+    TextureArray mTextureArray;
+    Shader mShader;
 
 public:
     Renderer();
 
     void Draw(std::span<const Renderable> renderables, glm::mat4 view, glm::mat4 projection);
 
-    template <typename T>
-    ResourceHandle<Mesh> AddMesh(const std::vector<T> &vertices, const std::vector<unsigned int> &indices, const VertexBufferLayout &layout);
+    ResourceHandle<Mesh> AddMesh(std::span<float> vertices, std::span<unsigned int> indices, const VertexBufferLayout &layout);
 };

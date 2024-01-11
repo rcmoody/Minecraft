@@ -23,11 +23,6 @@ Texture::Texture(const void *data, int width, int height)
     }
 }
 
-Texture::~Texture()
-{
-    glDeleteTextures(1, &mID);
-}
-
 void Texture::Bind()
 {
     glBindTexture(GL_TEXTURE_2D, mID);

@@ -11,40 +11,28 @@
 #include "renderer/renderer.hpp"
 #include "world/world.hpp"
 
-#define ASPECT_RATIO(WIDTH, HEIGHT) static_cast<float>(WIDTH) / static_cast<float>(HEIGHT)
-
 void FramebufferSizeCallback(GLFWwindow *window, int width, int height);
 void MouseCallback(GLFWwindow *window, double xPos, double yPos);
 
 class Application
 {
+private:
+    Application(GLFWwindow *window, float aspectRatio)
+        : mWindow(window), mAspectRatio(aspectRatio), mCamera(Camera{.position = glm::vec3(-2.0f, 0.0f, -2.0f)}), mWorld(10, 10)
+    {
+        glfwSetWindowUserPointer(window, static_cast<void *>(this));
+    }
+
 public:
-    GLFWwindow *window;
-    const char *windowTitle;
-    const char *windowIcon;
-    const int windowWidth;
-    const int windowHeight;
+    GLFWwindow *mWindow;
 
-    float aspectRatio;
+    float mAspectRatio;
 
-    std::optional<Renderer> renderer;
-    std::optional<Camera> camera;
+    Renderer mRenderer;
+    Camera mCamera;
+    World mWorld;
 
-    std::optional<World> world;
-
-    Application(const char *title, const char *windowIcon, int width, int height)
-        : windowTitle(title), windowIcon(windowIcon), windowWidth(width), windowHeight(height), aspectRatio(ASPECT_RATIO(width, height))
-    {
-    }
-
-    void Run()
-    {
-        Init();
-        MainLoop();
-        Cleanup();
-    }
-
-    void Init()
+    static Application Init(const char *title, const char *windowIcon, int width, int height)
     {
         if (!glfwInit())
         {
@@ -55,7 +43,7 @@ public:
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(windowWidth, windowHeight, windowTitle, NULL, NULL);
+        GLFWwindow *window = glfwCreateWindow(width, height, title, NULL, NULL);
         if (!window)
         {
             glfwTerminate();
@@ -70,7 +58,6 @@ public:
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glfwSetCursorPosCallback(window, MouseCallback);
-        glfwSetWindowUserPointer(window, static_cast<void *>(this));
 
         glfwMakeContextCurrent(window);
 
@@ -85,39 +72,38 @@ public:
         glDebugMessageCallback(Debug::DebugCallback, 0);
 #endif
 
-        renderer = std::make_optional<Renderer>();
-        camera = std::make_optional<Camera>(Camera{.position = glm::vec3(-2.0f, 0.0f, -2.0f)});
+        float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-        world = std::make_optional<World>(10, 10);
+        return Application(window, aspectRatio);
     }
 
-    void MainLoop()
+    void Run()
     {
         std::vector<Renderable> renderables;
 
-        for (auto [position, chunk] : world->chunks)
+        for (auto [position, chunk] : mWorld.chunks)
         {
-            renderables.emplace_back(chunk.GenerateRenderable(renderer.value(), glm::vec3(position.x * CHUNK_WIDTH, 0.0f, position.y * CHUNK_DEPTH)));
+            renderables.emplace_back(chunk.GenerateRenderable(mRenderer, glm::vec3(position.x * CHUNK_WIDTH, 0.0f, position.y * CHUNK_DEPTH)));
         }
 
-        while (!glfwWindowShouldClose(window))
+        while (!glfwWindowShouldClose(mWindow))
         {
             float currentFrame = static_cast<float>(glfwGetTime());
             static float lastFrame = currentFrame;
             float deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
 
-            camera->processInput(window, deltaTime);
+            mCamera.ProcessInput(mWindow, deltaTime);
 
-            renderer->Draw(renderables, camera->getViewMatrix(), camera->getProjectionMatrix(aspectRatio));
+            mRenderer.Draw(renderables, mCamera.getViewMatrix(), mCamera.getProjectionMatrix(mAspectRatio));
 
-            glfwSwapBuffers(window);
+            glfwSwapBuffers(mWindow);
 
             glfwPollEvents();
         }
     }
 
-    void Cleanup()
+    ~Application()
     {
         glfwTerminate();
     }
@@ -128,7 +114,7 @@ void FramebufferSizeCallback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 
     auto app = static_cast<Application *>(glfwGetWindowUserPointer(window));
-    app->aspectRatio = ASPECT_RATIO(width, height);
+    app->mAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
@@ -137,36 +123,31 @@ void MouseCallback(GLFWwindow *window, double xPos, double yPos)
 
     if (app)
     {
-        auto &camera = app->camera;
+        auto &camera = app->mCamera;
 
-        if (camera)
+        static double lastX = xPos;
+        static double lastY = yPos;
+
+        float xOffset = static_cast<float>(xPos - lastX);
+        float yOffset = static_cast<float>(lastY - yPos);
+
+        xOffset *= camera.sensitivity;
+        yOffset *= camera.sensitivity;
+
+        camera.yaw += xOffset;
+        camera.pitch += yOffset;
+
+        camera.pitch = glm::clamp(camera.pitch, -89.9f, 89.9f);
+        camera.yaw = std::fmod(camera.yaw, 360.0f);
+        if (camera.yaw < 0.0f)
         {
-            static double lastX = xPos;
-            static double lastY = yPos;
-            static float pitch = camera->getPitch();
-            static float yaw = camera->getYaw();
-
-            float xOffset = static_cast<float>(xPos - lastX);
-            float yOffset = static_cast<float>(lastY - yPos);
-
-            xOffset *= camera->sensitivity;
-            yOffset *= camera->sensitivity;
-
-            yaw += xOffset;
-            pitch += yOffset;
-
-            pitch = glm::clamp(pitch, -89.9f, 89.9f);
-            yaw = std::fmod(yaw, 360.0f);
-            if (yaw < 0.0f)
-            {
-                yaw += 360.0f;
-            }
-
-            camera->setPitchAndYaw(pitch, yaw);
-
-            lastX = xPos;
-            lastY = yPos;
+            camera.yaw += 360.0f;
         }
+
+        camera.UpdateFrontVector();
+
+        lastX = xPos;
+        lastY = yPos;
     }
 }
 
@@ -178,7 +159,7 @@ int main(void)
 
     try
     {
-        Application app("Minecraft", "res/images/icon.png", 960, 540);
+        Application app = Application::Init("Minecraft", "res/images/icon.png", 960, 540);
         app.Run();
     }
     catch (const std::exception &e)

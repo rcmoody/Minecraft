@@ -7,13 +7,18 @@
 
 #include "opengl.hpp"
 
-class VertexArray : public OpenGLObject
+struct VertexArrayDeleter
+{
+    void operator()(GLuint id)
+    {
+        glDeleteVertexArrays(1, &id);
+    }
+};
+
+class VertexArray : public OpenGLObject<VertexArrayDeleter>
 {
 public:
     VertexArray();
-    ~VertexArray();
-    VertexArray(VertexArray &&) = default;
-    VertexArray &operator=(VertexArray &&) = default;
 
     void AddBuffer(const VertexBuffer &vertexBuffer, const VertexBufferLayout &layout);
     void Bind() const;

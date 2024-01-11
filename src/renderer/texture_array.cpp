@@ -30,11 +30,6 @@ TextureArray::TextureArray(int width, int height, const std::vector<void *> &dat
     }
 }
 
-TextureArray::~TextureArray()
-{
-    glDeleteTextures(1, &mID);
-}
-
 void TextureArray::Bind() const
 {
     glBindTexture(GL_TEXTURE_2D_ARRAY, mID);

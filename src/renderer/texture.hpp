@@ -7,13 +7,18 @@
 
 #include "opengl.hpp"
 
-class Texture : public OpenGLObject
+struct TextureDeleter
+{
+    void operator()(GLuint id)
+    {
+        glDeleteTextures(1, &id);
+    }
+};
+
+class Texture : public OpenGLObject<TextureDeleter>
 {
 public:
     Texture(const void *data, int width, int height);
-    ~Texture();
-    Texture(Texture &&) = default;
-    Texture &operator=(Texture &&) = default;
 
     void Bind();
     void Unbind();

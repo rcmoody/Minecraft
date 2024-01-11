@@ -8,11 +8,6 @@ Buffer::Buffer(GLenum target, const void *data, GLsizeiptr size)
     glBufferData(mTarget, size, data, GL_STATIC_DRAW);
 }
 
-Buffer::~Buffer()
-{
-    glDeleteBuffers(1, &mID);
-}
-
 void Buffer::Bind() const
 {
     glBindBuffer(mTarget, mID);

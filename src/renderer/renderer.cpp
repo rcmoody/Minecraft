@@ -7,6 +7,9 @@
 #include "../utils.hpp"
 
 Renderer::Renderer()
+    : mShader({{GL_VERTEX_SHADER, Utils::ReadFile("res/shaders/vert.glsl")},
+               {GL_FRAGMENT_SHADER, Utils::ReadFile("res/shaders/frag.glsl")}}),
+      mTextureArray(Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"}))
 {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -16,29 +19,21 @@ Renderer::Renderer()
     glDepthFunc(GL_LESS);
 
     glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
-
-    std::unordered_map<GLenum, std::string> sources;
-    sources[GL_VERTEX_SHADER] = Utils::ReadFile("res/shaders/vert.glsl");
-    sources[GL_FRAGMENT_SHADER] = Utils::ReadFile("res/shaders/frag.glsl");
-    mShader = std::make_optional<Shader>(sources);
-
-    mTextureArray = std::make_optional<TextureArray>(Utils::LoadTextureArray(16, 16, {"res/images/grass_side.png", "res/images/grass_top.png", "res/images/dirt.png"}));
 }
 
 void Renderer::Draw(std::span<const Renderable> renderables, glm::mat4 view, glm::mat4 projection)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mShader->Bind();
-    mShader->setMat4("view", view);
-    mShader->setMat4("projection", projection);
+    mShader.Bind();
+    mShader.setMat4("view", view);
+    mShader.setMat4("projection", projection);
 
     for (auto &renderable : renderables)
-        renderable.Render(mMeshes, mShader.value());
+        renderable.Render(mMeshes, mShader);
 }
 
-template <>
-ResourceHandle<Mesh> Renderer::AddMesh<float>(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, const VertexBufferLayout& layout)
+ResourceHandle<Mesh> Renderer::AddMesh(std::span<float> vertices, std::span<unsigned int> indices, const VertexBufferLayout &layout)
 {
     VertexArray vertexArray;
 

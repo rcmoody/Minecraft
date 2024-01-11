@@ -8,13 +8,18 @@
 
 #include "opengl.hpp"
 
-class Shader : public OpenGLObject
+struct ShaderDeleter
+{
+    void operator()(GLuint id)
+    {
+        glDeleteProgram(id);
+    }
+};
+
+class Shader : public OpenGLObject<ShaderDeleter>
 {
 public:
     Shader(const std::unordered_map<GLenum, std::string> &sources);
-    ~Shader();
-    Shader(Shader &&) = default;
-    Shader &operator=(Shader &&) = default;
 
     void Bind() const;
     void Unbind() const;

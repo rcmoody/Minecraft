@@ -11,6 +11,9 @@ struct Camera
     float nearClip = 0.1f;
     float farClip = 1000.0f;
 
+    float pitch = 0.0f;
+    float yaw = 0.0f;
+
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 front = glm::vec3(1.0f, 0.0f, 0.0f);
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -18,7 +21,7 @@ struct Camera
     float speed = 10.0f;
     float sensitivity = 0.1f;
 
-    void processInput(GLFWwindow *window, float deltaTime)
+    void ProcessInput(GLFWwindow *window, float deltaTime)
     {
         float velocity = speed * deltaTime;
 
@@ -48,22 +51,11 @@ struct Camera
         return glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip);
     }
 
-    void setPitchAndYaw(float pitch, float yaw)
+    void UpdateFrontVector()
     {
         front = glm::normalize(glm::vec3{
             cos(glm::radians(yaw)) * cos(glm::radians(pitch)),
             sin(glm::radians(pitch)),
-            sin(glm::radians(yaw)) * cos(glm::radians(pitch))
-        });
-    }
-
-    float getPitch() const
-    {
-        return glm::degrees(glm::asin(front.y));
-    }
-
-    float getYaw() const
-    {
-        return glm::degrees(glm::atan(front.z, front.x));
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch))});
     }
 };

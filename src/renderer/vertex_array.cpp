@@ -5,11 +5,6 @@ VertexArray::VertexArray()
     glGenVertexArrays(1, &mID);
 }
 
-VertexArray::~VertexArray()
-{
-    glDeleteVertexArrays(1, &mID);
-}
-
 void VertexArray::AddBuffer(const VertexBuffer &vertexBuffer, const VertexBufferLayout &layout)
 {
     Bind();
